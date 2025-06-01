@@ -1,13 +1,13 @@
 const { getCollection, ObjectId } = require("./db");
 const Logger = require("../logs/Logger");
 
-const COLLECTION_NAME = "usuarios";
+const COLLECTION_USUARIOS = "usuarios";
 
 class UsuarioRepositorio {
 
     async criar(user) {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             const result = await usersCollection.insertOne(user);
             Logger.info(`Usuário criado com ID: ${result.insertedId}`);
             return { _id: result.insertedId, ...user };
@@ -19,7 +19,7 @@ class UsuarioRepositorio {
 
     async procurarPorId(userId) {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             if (!ObjectId.isValid(userId)) {
                 Logger.warn(`Tentativa de buscar usuário com ID inválido: ${userId}`);
                 return null;
@@ -39,7 +39,7 @@ class UsuarioRepositorio {
 
     async procurarPorEmail(email) {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             const user = await usersCollection.findOne({ email: email });
             if (user) {
                 Logger.info(`Usuário encontrado por email: ${email}`);
@@ -55,7 +55,7 @@ class UsuarioRepositorio {
 
     async procurarTodos() {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             const users = await usersCollection.find({}).toArray();
             Logger.info(`Total de usuários encontrados: ${users.length}`);
             return users;
@@ -67,7 +67,7 @@ class UsuarioRepositorio {
 
     async atualizar(userId, updateData) {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             if (!ObjectId.isValid(userId)) {
                 Logger.warn(`Tentativa de atualizar usuário com ID inválido: ${userId}`);
                 return null;
@@ -97,7 +97,7 @@ class UsuarioRepositorio {
 
     async deletar(userId) {
         try {
-            const usersCollection = getCollection(COLLECTION_NAME);
+            const usersCollection = getCollection(COLLECTION_USUARIOS);
             if (!ObjectId.isValid(userId)) {
                 Logger.warn(`Tentativa de deletar usuário com ID inválido: ${userId}`);
                 return false;

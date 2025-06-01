@@ -1,12 +1,12 @@
-const Logger = require('../logs/Logger'); // Ajuste o caminho
 const { getCollection, ObjectId } = require("./db");
+const Logger = require('../logs/Logger');
 
-const NOME_COLECAO = 'fotos';
+const COLLECTION_FOTOS = 'fotos';
 
 class FotoRepositorio {
     async criar(foto) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             const resultado = await colecaoFotos.insertOne(foto);
             Logger.info(`Foto criada com ID: ${resultado.insertedId} para o usuário ${foto.usuarioId}`);
             return { _id: resultado.insertedId, ...foto };
@@ -18,7 +18,7 @@ class FotoRepositorio {
 
     async procurarPorId(fotoId) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!ObjectId.isValid(fotoId)) {
                 Logger.warn(`Tentativa de buscar foto com ID inválido: ${fotoId}`);
                 return null;
@@ -38,7 +38,7 @@ class FotoRepositorio {
 
     async buscarPorUsuarioId(usuarioId) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!ObjectId.isValid(usuarioId)) {
                 Logger.warn(`Tentativa de buscar fotos com usuarioId inválido: ${usuarioId}`);
                 return [];
@@ -54,12 +54,12 @@ class FotoRepositorio {
 
     async buscarPorAlbumId(albumId) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!ObjectId.isValid(albumId)) {
                 Logger.warn(`Tentativa de buscar fotos com albumId inválido: ${albumId}`);
                 return [];
             }
-            // As fotos contêm um array 'albumIds'
+
             const fotos = await colecaoFotos.find({ albumIds: albumId }).toArray();
             Logger.info(`Encontradas ${fotos.length} fotos para o álbum ID: ${albumId}`);
             return fotos;
@@ -71,13 +71,11 @@ class FotoRepositorio {
 
     async buscarPorTags(tags) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!Array.isArray(tags) || tags.length === 0) {
                 Logger.warn('Tentativa de buscar fotos com tags inválidas ou vazias.', { tags });
                 return [];
             }
-            // Busca fotos que contenham QUALQUER uma das tags fornecidas (usando $in)
-            // Para buscar fotos que contenham TODAS as tags, use $all
             const fotos = await colecaoFotos.find({ tags: { $in: tags } }).toArray();
             Logger.info(`Encontradas ${fotos.length} fotos para as tags: ${tags.join(', ')}`);
             return fotos;
@@ -89,7 +87,7 @@ class FotoRepositorio {
 
     async atualizar(fotoId, usuarioId, dadosAtualizacao) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!ObjectId.isValid(fotoId) || !ObjectId.isValid(usuarioId)) {
                 Logger.warn(`Tentativa de atualizar foto com ID inválido: FotoID ${fotoId}, UsuarioID ${usuarioId}`);
                 return null;
@@ -125,15 +123,12 @@ class FotoRepositorio {
 
     async deletar(fotoId, usuarioId) {
         try {
-            const colecaoFotos = getCollection(NOME_COLECAO);
+            const colecaoFotos = getCollection(COLLECTION_FOTOS);
             if (!ObjectId.isValid(fotoId) || !ObjectId.isValid(usuarioId)) {
                 Logger.warn(`Tentativa de deletar foto com ID inválido: FotoID ${fotoId}, UsuarioID ${usuarioId}`);
                 return false;
             }
 
-            // Antes de deletar os metadados da foto, o arquivo físico associado
-            // (em `urlArmazenamento`) também precisaria ser deletado.
-            // Essa lógica de deleção do arquivo físico normalmente estaria no AppServico.
             const resultado = await colecaoFotos.deleteOne({ _id: fotoId, usuarioId: usuarioId });
 
             if (resultado.deletedCount === 1) {

@@ -1,6 +1,6 @@
-const Entidade = require('../entidade/entidade');
+const EntidadeBase = require('../base/EntidadeBase');
 
-class Usuario extends Entidade {
+class Usuario extends EntidadeBase {
     constructor(nome, email, senha) {
         super();
         this.nome = nome;

@@ -1,6 +1,6 @@
-const Entidade = require("../entidade/entidade");
+const EntidadeBase = require("../base/EntidadeBase");
 
-class Album extends Entidade{
+class Album extends EntidadeBase{
   constructor(nome, descricao, urlFotoCapa, userId) {
     super();
     this.nome = nome;
