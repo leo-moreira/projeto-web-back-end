@@ -1,105 +1,91 @@
 # Projeto 1: Biblioteca de Acesso a Dados para Armazenamento de Fotos
----
 
-**Instituição:** Universidade Tecnológica Federal do Paraná (UTFPR) - Campus Cornélio Procópio 
-**Disciplina:** Programação Web Back-End 
-**Professor(a):** Prof. Monique Emídio de Oliveira 
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Versão do Projeto" />
+  <img src="https://img.shields.io/badge/license-ISC-blue.svg" alt="Licença" />
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D16.20.1-green.svg" alt="Node.js" />
+  <img src="https://img.shields.io/badge/MongoDB%20Driver-v6.16.0-green.svg" alt="MongoDB Driver" />
+  <img src="https://img.shields.io/badge/status-em%20desenvolvimento-orange" alt="Status do Projeto" />
+  <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Manutenção" />
+</p>
+
+**Instituição:** Universidade Tecnológica Federal do Paraná (UTFPR) - Campus Cornélio Procópio
+**Disciplina:** Programação Web Back-End
+**Professor(a):** Prof. Monique Emídio de Oliveira
 **Temática Escolhida:** Armazenamento de fotos (como o Google Fotos), com foco em armazenamento e busca de fotos em álbuns.
 
 ## 1. Descrição do Projeto
 
-Este projeto consiste no desenvolvimento de um conjunto de classes (biblioteca) em Node.js para acesso a Sistemas de Gerenciamento de Banco de Dados (SGBDs). As classes desenvolvidas representam as entidades de um banco de dados focado na temática de armazenamento de fotos e implementam métodos para inserção, busca e deleção de dados.
-
-O sistema visa simular funcionalidades de um serviço como o Google Fotos, permitindo o armazenamento de informações sobre fotos, sua organização em álbuns e a busca por essas fotos.
+Desenvolvimento de uma biblioteca de classes em Node.js para acesso a SGBDs, focada na temática de armazenamento de fotos. Implementa inserção, busca e deleção de dados, simulando funcionalidades de um serviço de armazenamento e organização de fotos em álbuns.
 
 ## 2. Tecnologias Utilizadas
 
-* **Node.js:** Ambiente de execução JavaScript server-side.
-* **MongoDB:** Banco de dados NoSQL orientado a documentos, utilizado com o driver nativo do MongoDB para Node.js.
-* **JavaScript (ES Modules):** Linguagem de programação principal, utilizando a sintaxe de módulos ES.
-* **Domain-Driven Design (DDD):** Conceitos aplicados para a estruturação do projeto, visando um código mais organizado e alinhado com as regras de negócio.
+* **Node.js**
+* **MongoDB** (driver nativo v6.16.0)
+* **JavaScript (CommonJS)**
+* **Domain-Driven Design (DDD)** (conceitos aplicados na estrutura)
 
 ## 3. Estrutura do Projeto
 
-O projeto foi estruturado seguindo princípios do Domain-Driven Design (DDD), dividido conceitualmente nas seguintes camadas e pastas principais dentro de `src/`:
-
-* **`dominio/`**: Contém as entidades do negócio, objetos de valor e as interfaces dos repositórios.
-    * `usuario/`: Entidade `Usuario` e sua interface de repositório.
-    * `album/`: Entidade `Album` e sua interface de repositório.
-    * `foto/`: Entidade `Foto` (representando os documentos/fotos) e sua interface de repositório.
-* **`aplicacao/`**: Orquestra os casos de uso através dos Serviços de Aplicação, que utilizam os repositórios e entidades.
-    * `UsuarioServico.js`
-    * `AlbumServico.js`
-    * `FotoServico.js`
-* **`infraestrutura/`**: Implementações concretas e detalhes técnicos.
-    * `persistencia/mongo/`: Implementações dos repositórios para MongoDB (`MongoUsuarioRepositorio.js`, etc.) e configuração da conexão (`db.js`).
-    * `logging/`: Módulo de `Logger.js` para registro de logs de eventos e erros.
-    * `arquivos/`: `GerenciadorDeArquivos.js` para lidar com o armazenamento físico das fotos.
+Baseado em DDD, o projeto em `src/` organiza-se em:
+* **`dominio/`**: Entidades (`Usuario`, `Album`, `Foto` herdando de `EntidadeBase`).
+* **`application/`** (ou `aplicacao/`): Serviços de Aplicação (`UsuarioService`, `AlbumService`, `FotoService`).
+* **`infraestrutura/`**: Detalhes técnicos.
+    * `persistencia/`: Repositórios MongoDB e conexão (`db.js`). Coleções: `usuarios`, `albums`, `fotos`.
+    * `logs/`: `Logger.js` para logs de eventos e erros.
+    * `arquivos/`: `GerenciadorDeArquivos.js` para armazenamento físico na pasta `uploads/`.
+* **`testesDeDados/`**: Script `testData.js` para carga e teste.
 
 ## 4. Funcionalidades Implementadas
 
-A biblioteca implementa as operações de CRUD (Criar, Ler, Atualizar, Deletar) para as seguintes entidades:
-
-### 4.1. Usuário (`UsuarioServico`)
-* Registro de novos usuários.
-* Busca de usuários por ID e por email.
-* Listagem de todos os usuários.
-* Atualização de dados de usuários.
-* Deleção de usuários.
-
-### 4.2. Álbum (`AlbumServico`)
-* Criação de novos álbuns para um usuário.
-* Busca de álbuns por ID.
-* Listagem de todos os álbuns de um usuário específico.
-* Atualização de informações de um álbum (nome, descrição, foto de capa).
-* Deleção de álbuns (garantindo que apenas o proprietário possa realizar a ação).
-
-### 4.3. Foto/Documento (`FotoServico`)
-* Upload (registro) de novas fotos, associadas a um usuário e opcionalmente a um ou mais álbuns.
-* Busca de fotos por ID.
-* Listagem de todas as fotos de um usuário específico.
-* Listagem de todas as fotos de um álbum específico.
-* Busca de fotos por tags.
-* Atualização dos metadados de uma foto (título, descrição, tags, álbuns associados).
-* Deleção de fotos (garantindo que apenas o proprietário possa realizar a ação e removendo o arquivo físico).
-
-### 4.4. Gerenciamento de Arquivos (`GerenciadorDeArquivos`)
-* Salvar arquivos (buffers) no sistema de arquivos local em uma estrutura de pastas organizada.
-* Deletar arquivos físicos do sistema de arquivos.
+* **Gerenciamento de Usuários:** CRUD completo.
+* **Gerenciamento de Álbuns:** CRUD completo, listagem por usuário e controle de proprietário.
+* **Gerenciamento de Fotos:** Upload (com salvamento de arquivo físico), CRUD de metadados, listagem por usuário/álbum, busca por tags e controle de proprietário.
+* **Gerenciamento de Arquivos Físicos:** Salvamento e deleção de arquivos de fotos.
 
 ## 5. Requisitos Adicionais Atendidos
 
-Conforme a proposta do projeto, os seguintes requisitos foram contemplados:
-
-* **Definição de Classes:** Foram definidas classes para representar as entidades `Usuario`, `Album` e `Foto` e para o armazenamento de suas informações.
-* **Tratamento de Erros e Logs:** Implementação de rotinas para tratamento de exceções em todas as camadas e registro de logs de eventos e erros detalhados através de um módulo `Logger`.
-* **Verificação de Campos Obrigatórios:** Os Serviços de Aplicação realizam a verificação do preenchimento de campos obrigatórios antes de prosseguir com as operações.
-* **Tratamento de Exceções de Bibliotecas:** As exceções lançadas por bibliotecas externas (como o driver do MongoDB) são capturadas e tratadas adequadamente.
-* **Armazenamento de Logs:** Os erros e eventos relevantes são registrados em arquivos de log (ou console, dependendo da configuração do `Logger`).
+Conforme a proposta do projeto:
+* Classes de entidade definidas (`Usuario`, `Album`, `Foto`).
+* Implementação de tratamento de erros, logs de eventos e exceções (com `Logger.js` escrevendo erros em `log.txt`).
+* Verificação de campos obrigatórios nos serviços de aplicação.
+* Tratamento de exceções de bibliotecas externas.
 
 ## 6. Configuração e Execução
 
 ### 6.1. Pré-requisitos
-* Node.js (versão 18.x ou superior recomendada)
-* MongoDB (instalado e o serviço `mongod` em execução na porta padrão 27017)
+* Node.js (v16.20.1 ou superior, conforme dependência do driver MongoDB).
+* MongoDB (instalado e rodando).
 
 ### 6.2. Instalação
-1.  Clone o repositório:
-    ```bash
-    git clone git@github.com:leo-moreira/projeto-web-back-end.git
-    cd projeto-web-back-end
-    ```
-2.  Instale as dependências:
-    ```bash
-    npm install
-    ```
-    *(Se houver dependências como `mongodb`, adicione-as ao `package.json` e liste aqui)*
+1.  Clone: `git clone git@github.com:leo-moreira/projeto-web-back-end.git && cd projeto-web-back-end`
+2.  Dependências: `npm install`
 
 ### 6.3. Configuração
-* A string de conexão do MongoDB está configurada no arquivo `src/infraestrutura/persistencia/mongo/db.js` para `mongodb://localhost:27017`. O nome do banco de dados também é definido neste arquivo.
-* A pasta base para upload de arquivos físicos é `uploads/` na raiz do projeto, gerenciada por `src/infraestrutura/arquivos/GerenciadorDeArquivos.js`.
+* MongoDB: Conexão em `src/infraestrutura/persistencia/db.js` (`mongodb://localhost:27017`, banco `bancoDeFotos`).
+* Uploads: Pasta `uploads/` na raiz do projeto.
 
-### 6.4. Executando o Script de Teste e Carga de Dados
-Para popular o banco de dados com dados de exemplo e testar as funcionalidades dos serviços, execute:
-```bash
-node testData.js
+### 6.4. Script de Teste e Carga de Dados
+Execute `node src/testesDeDados/testData.js` para popular o banco e testar os serviços.
+O arquivo `src/main.js` apenas inicia a conexão com o banco.
+
+## 7. Como Usar a Biblioteca (Exemplo)
+
+```javascript
+// Exemplo de uso (CommonJS)
+const FotoServico = require('./src/application/FotoService'); // Ajuste o caminho
+const db = require('./src/infraestrutura/persistencia/db');
+const Logger = require('./src/infraestrutura/logs/Logger');
+Logger.debug = true;
+
+async function main() {
+    await db.connectDB();
+    const fotoServico = new FotoServico();
+    try {
+        // Ex: const fotos = await fotoServico.obterFotosPorUsuarioId('ID_VALIDO');
+        // Logger.info('Fotos:', fotos);
+    } catch (e) { Logger.error('Erro no exemplo:', e); }
+}
+main();
+```
